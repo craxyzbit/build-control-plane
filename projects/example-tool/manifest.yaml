@@ -1,0 +1,8 @@
+project:
+  name: example-tool
+  binary: example-tool
+
+upstream:
+  url: https://github.com/example/tool
+  resolver: github-release
+  fetch_strategy: git

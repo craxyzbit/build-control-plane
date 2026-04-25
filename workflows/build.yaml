@@ -1,0 +1,19 @@
+name: build
+runner: github-actions
+
+dispatch:
+  type: workflow_dispatch
+  inputs:
+    project:
+      required: true
+      description: Project contract name under projects/
+
+jobs:
+  build:
+    steps:
+      - checkout
+      - execute-pipeline
+
+notes:
+  - This file is the logical orchestration contract.
+  - The executable workflow is in .github/workflows/build.yml.

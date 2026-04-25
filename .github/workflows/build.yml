@@ -1,0 +1,25 @@
+name: Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: Project contract name under projects/
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare shell permissions
+        run: chmod +x scripts/run.sh scripts/pipeline/*.sh
+
+      - name: Execute pipeline
+        env:
+          PROJECT: ${{ inputs.project }}
+        run: ./scripts/run.sh
