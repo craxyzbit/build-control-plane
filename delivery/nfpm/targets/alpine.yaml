@@ -1,0 +1,5 @@
+formats:
+  - apk
+
+scripts:
+  postinstall: ./scripts/hooks/openrc/postinstall.sh

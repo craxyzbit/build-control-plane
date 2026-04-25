@@ -1,0 +1,10 @@
+formats:
+  - deb
+
+overrides:
+  deb:
+    depends:
+      - libc6
+
+scripts:
+  postinstall: ./scripts/hooks/systemd/postinstall.sh

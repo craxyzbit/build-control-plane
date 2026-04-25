@@ -1,0 +1,12 @@
+name: ${PROJECT_NAME}
+arch: ${PKG_ARCH}
+platform: linux
+version: ${VERSION}
+release: 1
+version_schema: semver
+
+contents:
+  - src: ${BIN_PATH}
+    dst: /usr/bin/${PROJECT_NAME}
+    file_info:
+      mode: 0755

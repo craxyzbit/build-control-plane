@@ -1,0 +1,5 @@
+formats:
+  - ipk
+
+scripts:
+  postinstall: ./scripts/hooks/procd/postinstall.sh

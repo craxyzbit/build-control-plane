@@ -1,0 +1,11 @@
+build:
+  command: make build
+  output: bin/example-tool
+
+abi_profiles:
+  - glibc-amd64
+  - musl-arm64
+
+delivery_targets:
+  - debian-systemd
+  - alpine-openrc
