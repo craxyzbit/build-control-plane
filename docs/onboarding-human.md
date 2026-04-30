@@ -27,6 +27,8 @@ Understand the product, decide whether a target upstream belongs here, and add a
 4. Run `PROJECT=<name> ./scripts/run.sh`
 5. Push and trigger the GitHub Actions workflow
 
+After a GitHub Actions run, inspect the uploaded `dist/<project>/` artifact first. It is the structured diagnostic surface for later debugging.
+
 ## Where To Change What
 
 - change docs and meaning in `docs/`

@@ -65,3 +65,18 @@ jobs:
           OPENWRT_EXECUTE_COLLECT: ${{ inputs.openwrt_execute_collect }}
           OPENWRT_BUILD_JOBS: ${{ inputs.openwrt_build_jobs }}
         run: ./scripts/run.sh
+
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f "dist/${{ inputs.project }}/plans/summary.txt" ]; then
+            cat "dist/${{ inputs.project }}/plans/summary.txt" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload runtime state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.project }}-runtime-state-${{ github.run_id }}
+          path: dist/${{ inputs.project }}
+          if-no-files-found: warn
