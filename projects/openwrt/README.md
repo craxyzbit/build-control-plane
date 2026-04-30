@@ -35,3 +35,5 @@ You can also inject a private plan at runtime without committing it:
 - GitHub Actions: pass `openwrt_private_plan_b64` in `workflow_dispatch`
 
 This is for non-secret operator preferences that should stay out of commit history. GitHub Actions inputs are still visible in run metadata, so do not use this path for credentials or true secrets.
+
+This channel is also not the place for controversial or operator-sensitive runtime selections that should remain outside the public project story. Keep the public contract focused on broadly understandable build intent.

@@ -168,6 +168,10 @@ openwrt_target_plan_path() {
   printf '%s/resolve/target-%s.env\n' "$(state_dir)" "$1"
 }
 
+openwrt_target_seed_config_path() {
+  printf '%s/seed-config-%s.config\n' "$(openwrt_build_dir)" "$1"
+}
+
 openwrt_artifact_manifest_path() {
   printf '%s/artifacts/manifest-%s.txt\n' "$(state_dir)" "$1"
 }
@@ -182,6 +186,10 @@ openwrt_runtime_private_dir() {
 
 openwrt_runtime_private_plan_path() {
   printf '%s/private/private-plan.yaml\n' "$(state_dir)"
+}
+
+openwrt_release_artifact_dir() {
+  printf '%s/releases\n' "$(state_dir)"
 }
 
 openwrt_source_dir() {
@@ -215,6 +223,42 @@ openwrt_target_expected_artifacts() {
       if ($0 !~ "^[[:space:]]") exit
     }
   ' "${file}"
+}
+
+openwrt_target_device_symbol() {
+  local target_family="$1"
+  local subtarget="$2"
+  local profile="$3"
+  local profile_symbol
+  profile_symbol="$(printf '%s' "${profile}" | sed 's/[^A-Za-z0-9]/_/g')"
+  printf 'CONFIG_TARGET_DEVICE_%s_%s_DEVICE_%s=y\n' "${target_family}" "${subtarget}" "${profile_symbol}"
+}
+
+openwrt_package_symbol() {
+  local package_name="$1"
+  local package_symbol
+  package_symbol="$(printf '%s' "${package_name}" | sed 's/[^A-Za-z0-9]/_/g')"
+  printf 'CONFIG_PACKAGE_%s=y\n' "${package_symbol}"
+}
+
+openwrt_prepare_command_file() {
+  printf '%s/commands/prepare-%s.sh\n' "$(state_dir)" "$1"
+}
+
+openwrt_collect_command_file() {
+  printf '%s/commands/collect-%s.sh\n' "$(state_dir)" "$1"
+}
+
+openwrt_fetch_command_file() {
+  printf '%s/commands/fetch-openwrt-source.sh\n' "$(state_dir)"
+}
+
+openwrt_pipeline_command_file() {
+  printf '%s/commands/build-openwrt-targets.sh\n' "$(state_dir)"
+}
+
+openwrt_collect_pipeline_command_file() {
+  printf '%s/commands/collect-openwrt-targets.sh\n' "$(state_dir)"
 }
 
 openwrt_private_plan_source_path() {
