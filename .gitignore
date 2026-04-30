@@ -3,3 +3,4 @@ dist/
 projects/openwrt/package-sets/private.*
 !projects/openwrt/package-sets/private.example.txt
 projects/openwrt/files/private/**
+projects/openwrt/private-plan/private.plan.yaml

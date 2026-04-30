@@ -59,3 +59,11 @@ trim() {
   value="${value%"${value##*[![:space:]]}"}"
   printf '%s' "${value}"
 }
+
+copy_tree_into() {
+  local src="$1"
+  local dst="$2"
+  [[ -d "${src}" ]] || return 0
+  mkdir -p "${dst}"
+  tar -C "${src}" -cf - . | tar -C "${dst}" -xf -
+}

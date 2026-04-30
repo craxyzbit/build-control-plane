@@ -1,0 +1,15 @@
+version: 1
+kind: openwrt-private-plan
+
+global:
+  extra_packages:
+    - vim-full
+    - tcpdump
+
+targets:
+  qemu-x86-64:
+    extra_packages:
+      - kmod-e1000e
+  nanopi-r2s-arm64:
+    extra_packages:
+      - kmod-r8169

@@ -23,5 +23,15 @@ Image Builder can inject packages and filesystem overlays, but it cannot change 
 
 - `package-sets/private.extra.txt`
 - `files/private/`
+- `private-plan/private.plan.yaml`
 
 Keep operator-sensitive runtime additions out of git history by using those private paths locally.
+
+## Private Plan Input
+
+You can also inject a private plan at runtime without committing it:
+
+- local run: set `OPENWRT_PRIVATE_PLAN_PATH`
+- GitHub Actions: pass `openwrt_private_plan_b64` in `workflow_dispatch`
+
+This is for non-secret operator preferences that should stay out of commit history. GitHub Actions inputs are still visible in run metadata, so do not use this path for credentials or true secrets.

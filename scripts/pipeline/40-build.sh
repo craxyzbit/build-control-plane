@@ -21,11 +21,11 @@ rm -rf "${OVERLAY_STAGING}"
 mkdir -p "${OVERLAY_STAGING}"
 
 if [[ -d "$(openwrt_public_files_dir)" ]]; then
-  cp -R "$(openwrt_public_files_dir)"/. "${OVERLAY_STAGING}/"
+  copy_tree_into "$(openwrt_public_files_dir)" "${OVERLAY_STAGING}"
 fi
 
 if [[ -d "$(openwrt_private_files_dir)" ]]; then
-  cp -R "$(openwrt_private_files_dir)"/. "${OVERLAY_STAGING}/"
+  copy_tree_into "$(openwrt_private_files_dir)" "${OVERLAY_STAGING}"
 fi
 
 tar -C "${OVERLAY_STAGING}" -czf "$(openwrt_overlay_archive_path)" .
@@ -53,6 +53,11 @@ while IFS= read -r target_name; do
   private_set="$(openwrt_private_package_set_path)"
   if [[ -f "${private_set}" ]]; then
     awk 'NF > 0 && $1 !~ /^#/' "${private_set}" >>"${pkg_manifest}"
+  fi
+
+  if [[ -n "${OPENWRT_PRIVATE_PLAN_FILE:-}" && -f "${OPENWRT_PRIVATE_PLAN_FILE}" ]]; then
+    openwrt_private_plan_global_extra_packages "${OPENWRT_PRIVATE_PLAN_FILE}" >>"${pkg_manifest}" || true
+    openwrt_private_plan_target_extra_packages "${OPENWRT_PRIVATE_PLAN_FILE}" "${target_name}" >>"${pkg_manifest}" || true
   fi
 
   sort -u -o "${pkg_manifest}" "${pkg_manifest}"
