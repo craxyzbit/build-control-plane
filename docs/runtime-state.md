@@ -22,16 +22,22 @@ Runtime state can also include materialized private plan files decoded or copied
 
 ## Diagnostics
 
-GitHub Actions runs should upload `dist/<project>/` as a build artifact.
+For public repositories, GitHub Actions should upload only `dist/<project>/public-diagnostics/` by default.
 
-That gives the operator and any later debugging session access to:
+That public bundle should stay minimal and may include:
 
-- stage logs
+- runtime summary
+- selected non-sensitive stage logs
+
+It should exclude:
+
+- materialized private plans
+- generated package manifests
 - generated command scripts
-- runtime summaries
-- artifact manifests
+- private runtime files
+- full local state trees
 
-without depending on raw console log copy-paste.
+Use the full `dist/<project>/` tree only in local debugging or in a private environment.
 
 ## What Counts As Real Contract
 

@@ -43,7 +43,7 @@ Read [architecture.md](/Users/lixo/projects/build-control-plane/docs/architectur
 - `PRIVATE_PLAN` is a repo-wide runtime injection channel for non-secret, non-committed customization.
 - schemas are project-defined, not repo-global.
 - `openwrt` is the first example consumer of this capability.
-- `dist/<project>/` is runtime state, and GitHub Actions should publish it as a diagnostic artifact.
+- `dist/<project>/` is runtime state, but public CI should upload only a minimal `public-diagnostics/` subset by default.
 
 Read [private-plan.md](/Users/lixo/projects/build-control-plane/docs/private-plan.md) and [runtime-state.md](/Users/lixo/projects/build-control-plane/docs/runtime-state.md) for the runtime boundary.
 
