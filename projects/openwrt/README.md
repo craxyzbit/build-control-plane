@@ -29,7 +29,7 @@ Keep operator-sensitive runtime additions out of git history by using those priv
 
 ## Private Plan Input
 
-`openwrt` consumes the repository-wide `PRIVATE_PLAN` capability with its own schema.
+`openwrt` consumes the repository-wide `PRIVATE_PLAN` capability with its own schema and its own parser behavior.
 
 You can inject an OpenWrt private plan at runtime without committing it:
 
@@ -39,3 +39,13 @@ You can inject an OpenWrt private plan at runtime without committing it:
 This is for non-secret operator preferences that should stay out of commit history. GitHub Actions inputs are still visible in run metadata, so do not use this path for credentials or true secrets.
 
 This channel is also not the place for controversial or operator-sensitive runtime selections that should remain outside the public project story. Keep the public contract focused on broadly understandable build intent.
+
+## Execution Modes
+
+The OpenWrt pipeline supports three practical modes:
+
+- planning only: generate plans, manifests, and runnable command scripts
+- build execution: set `OPENWRT_EXECUTE_BUILD=true` and provide `OPENWRT_SOURCE_DIR`, or combine it with `OPENWRT_AUTO_FETCH=true`
+- artifact collection: set `OPENWRT_EXECUTE_COLLECT=true` after or alongside build execution
+
+The default mode is planning only. This keeps public CI safe by default while still allowing a fully automated source-tree run when the environment is ready.

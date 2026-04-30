@@ -110,4 +110,13 @@ done < <(openwrt_target_names)
 } >"${COLLECT_PIPELINE_COMMAND}"
 chmod +x "${COLLECT_PIPELINE_COMMAND}"
 
+if openwrt_should_execute_collect; then
+  if ! source_dir="$(openwrt_source_dir 2>/dev/null)"; then
+    exit_with OPENWRT_SOURCE_DIR_REQUIRED "OPENWRT_EXECUTE_COLLECT requires OPENWRT_SOURCE_DIR or OPENWRT_AUTO_FETCH=true"
+  fi
+
+  log_info "Collecting OpenWrt build artifacts from ${source_dir}"
+  "${COLLECT_PIPELINE_COMMAND}" "${source_dir}"
+fi
+
 log_info "Prepared OpenWrt packaging and conversion plans"
