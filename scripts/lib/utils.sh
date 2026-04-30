@@ -12,3 +12,50 @@ require_env() {
 project_dir() {
   printf '%s/projects/%s\n' "${ROOT_DIR}" "${PROJECT}"
 }
+
+state_dir() {
+  printf '%s/dist/%s\n' "${ROOT_DIR}" "${PROJECT}"
+}
+
+runtime_env_file() {
+  printf '%s/runtime.env\n' "$(state_dir)"
+}
+
+ensure_dir() {
+  mkdir -p "$1"
+}
+
+init_runtime_state() {
+  ensure_dir "$(state_dir)"
+  ensure_dir "$(state_dir)/resolve"
+  ensure_dir "$(state_dir)/fetch"
+  ensure_dir "$(state_dir)/build"
+  ensure_dir "$(state_dir)/package"
+  ensure_dir "$(state_dir)/artifacts"
+  ensure_dir "$(state_dir)/plans"
+  ensure_dir "$(state_dir)/commands"
+  ensure_dir "$(state_dir)/tmp"
+  : >"$(runtime_env_file)"
+}
+
+persist_env() {
+  local name="$1"
+  local value="$2"
+  printf 'export %s=%q\n' "${name}" "${value}" >>"$(runtime_env_file)"
+}
+
+source_runtime_env() {
+  local env_file
+  env_file="$(runtime_env_file)"
+  if [[ -f "${env_file}" ]]; then
+    # shellcheck disable=SC1090
+    source "${env_file}"
+  fi
+}
+
+trim() {
+  local value="$1"
+  value="${value#"${value%%[![:space:]]*}"}"
+  value="${value%"${value##*[![:space:]]}"}"
+  printf '%s' "${value}"
+}
