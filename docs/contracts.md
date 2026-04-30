@@ -23,6 +23,26 @@ Purpose:
 - defines delivery targets
 - changes with build strategy
 
+### Target Contract
+
+File: `projects/<name>/targets/<target>.yaml`
+
+Purpose:
+
+- defines platform-specific build backend
+- defines required kernel capabilities
+- defines target artifact expectations
+
+### Package Set Contract
+
+File: `projects/<name>/package-sets/*.txt`
+
+Purpose:
+
+- keeps package layering readable
+- allows public and private package separation
+- avoids mixing operator-specific runtime choices into shared history
+
 ## Bootstrap DSL
 
 ```yaml

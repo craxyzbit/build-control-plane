@@ -1,0 +1,8 @@
+bpftool-minimal
+ip-full
+kmod-nft-core
+kmod-nft-tproxy
+kmod-sched-bpf
+nftables
+tc
+tc-bpf

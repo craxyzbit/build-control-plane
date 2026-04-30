@@ -1,0 +1,48 @@
+target:
+  name: qemu-x86-64
+  openwrt_target: x86
+  openwrt_subtarget: 64
+  profile: generic
+  arch: x86_64
+
+build_backend:
+  source_build: required
+  imagebuilder: optional
+
+kernel_capabilities:
+  required_config:
+    - CONFIG_BPF=y
+    - CONFIG_BPF_SYSCALL=y
+    - CONFIG_CGROUPS=y
+    - CONFIG_BPF_JIT=y
+    - CONFIG_KPROBES=y
+    - CONFIG_NET_INGRESS=y
+    - CONFIG_NET_EGRESS=y
+    - CONFIG_NET_SCH_INGRESS=m
+    - CONFIG_KPROBE_EVENTS=y
+    - CONFIG_BPF_EVENTS=y
+    - CONFIG_NET_CLS_BPF=m
+    - CONFIG_NET_CLS_ACT=y
+    - CONFIG_BPF_STREAM_PARSER=y
+    - CONFIG_DEBUG_INFO=y
+    - CONFIG_DEBUG_INFO_REDUCED=n
+    - CONFIG_DEBUG_INFO_BTF=y
+
+package_sets:
+  - package-sets/base.txt
+  - package-sets/ebpf-baseline.txt
+
+files_overlay:
+  - files/common/
+
+artifacts:
+  primary:
+    - ext4-combined.img.gz
+  optional:
+    - ext4-combined-efi.img.gz
+  derived:
+    - qcow2
+
+notes:
+  - Build the compressed disk image first.
+  - Convert the uncompressed raw image to qcow2 as a post-build step.

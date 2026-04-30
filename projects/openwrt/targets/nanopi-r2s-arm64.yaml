@@ -1,0 +1,43 @@
+target:
+  name: nanopi-r2s-arm64
+  openwrt_target: rockchip
+  openwrt_subtarget: armv8
+  profile: friendlyarm_nanopi-r2s
+  arch: aarch64
+
+build_backend:
+  source_build: required
+  imagebuilder: optional
+
+kernel_capabilities:
+  required_config:
+    - CONFIG_BPF=y
+    - CONFIG_BPF_SYSCALL=y
+    - CONFIG_CGROUPS=y
+    - CONFIG_BPF_JIT=y
+    - CONFIG_KPROBES=y
+    - CONFIG_NET_INGRESS=y
+    - CONFIG_NET_EGRESS=y
+    - CONFIG_NET_SCH_INGRESS=m
+    - CONFIG_KPROBE_EVENTS=y
+    - CONFIG_BPF_EVENTS=y
+    - CONFIG_NET_CLS_BPF=m
+    - CONFIG_NET_CLS_ACT=y
+    - CONFIG_BPF_STREAM_PARSER=y
+    - CONFIG_DEBUG_INFO=y
+    - CONFIG_DEBUG_INFO_REDUCED=n
+    - CONFIG_DEBUG_INFO_BTF=y
+
+package_sets:
+  - package-sets/base.txt
+  - package-sets/ebpf-baseline.txt
+
+files_overlay:
+  - files/common/
+
+artifacts:
+  primary:
+    - ext4-sysupgrade.img.gz
+
+notes:
+  - Keep the target profile explicit because board images are profile-specific.

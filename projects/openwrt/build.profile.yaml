@@ -1,0 +1,33 @@
+build:
+  strategy: hybrid-openwrt
+  host:
+    os: linux
+    arch: x86_64
+  phases:
+    - resolve-release-channel
+    - source-build
+    - package-layering
+    - image-packaging
+    - format-conversion
+    - verify
+
+kernel:
+  mode: source-build-required
+  reason: custom kernel capability flags are required for advanced eBPF networking workloads
+
+package_layering:
+  public_sets:
+    - package-sets/base.txt
+    - package-sets/ebpf-baseline.txt
+  private_optional_set: package-sets/private.extra.txt
+
+files_overlay:
+  public_dir: files/common/
+  private_optional_dir: files/private/
+
+host_tools:
+  - qemu-img
+
+targets:
+  - qemu-x86-64
+  - nanopi-r2s-arm64
