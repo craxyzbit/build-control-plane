@@ -28,6 +28,20 @@ on:
         required: false
         default: false
         type: boolean
+      openwrt_execute_build:
+        description: Execute generated OpenWrt build commands when a source tree is available
+        required: false
+        default: false
+        type: boolean
+      openwrt_execute_collect:
+        description: Collect build artifacts after a successful OpenWrt build
+        required: false
+        default: false
+        type: boolean
+      openwrt_build_jobs:
+        description: Optional job count passed to OpenWrt make
+        required: false
+        type: string
 
 jobs:
   build:
@@ -47,4 +61,7 @@ jobs:
           OPENWRT_VERSION: ${{ inputs.openwrt_version }}
           PRIVATE_PLAN_B64: ${{ inputs.private_plan_b64 }}
           OPENWRT_AUTO_FETCH: ${{ inputs.openwrt_auto_fetch }}
+          OPENWRT_EXECUTE_BUILD: ${{ inputs.openwrt_execute_build }}
+          OPENWRT_EXECUTE_COLLECT: ${{ inputs.openwrt_execute_collect }}
+          OPENWRT_BUILD_JOBS: ${{ inputs.openwrt_build_jobs }}
         run: ./scripts/run.sh

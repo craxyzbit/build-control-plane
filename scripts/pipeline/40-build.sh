@@ -149,4 +149,18 @@ done < <(openwrt_target_names)
 } >"${PIPELINE_COMMAND}"
 chmod +x "${PIPELINE_COMMAND}"
 
+if openwrt_should_execute_build; then
+  if ! source_dir="$(openwrt_source_dir 2>/dev/null)"; then
+    exit_with OPENWRT_SOURCE_DIR_REQUIRED "OPENWRT_EXECUTE_BUILD requires OPENWRT_SOURCE_DIR or OPENWRT_AUTO_FETCH=true"
+  fi
+
+  log_info "Executing OpenWrt build pipeline against ${source_dir}"
+  BUILD_JOBS="${OPENWRT_BUILD_JOBS:-${BUILD_JOBS:-}}"
+  if [[ -n "${BUILD_JOBS}" ]]; then
+    BUILD_JOBS="${BUILD_JOBS}" "${PIPELINE_COMMAND}" "${source_dir}"
+  else
+    "${PIPELINE_COMMAND}" "${source_dir}"
+  fi
+fi
+
 log_info "Prepared OpenWrt build inputs and per-target command scripts"

@@ -20,6 +20,10 @@ fi
 [[ -f "$(openwrt_plan_file package-plan.txt)" ]] || exit_with VERIFY_PACKAGE_PLAN_MISSING "Missing package plan"
 [[ -f "$(openwrt_overlay_archive_path)" ]] || exit_with VERIFY_OVERLAY_ARCHIVE_MISSING "Missing overlay archive"
 
+if openwrt_should_execute_build && ! openwrt_should_execute_collect; then
+  log_warn "Build execution was enabled without artifact collection"
+fi
+
 while IFS= read -r target_name; do
   [[ -f "$(openwrt_package_manifest_path "${target_name}")" ]] || exit_with VERIFY_PACKAGE_MANIFEST_MISSING "Missing package manifest for ${target_name}"
   [[ -f "$(openwrt_kernel_fragment_path "${target_name}")" ]] || exit_with VERIFY_KERNEL_FRAGMENT_MISSING "Missing kernel fragment for ${target_name}"
@@ -35,6 +39,9 @@ while IFS= read -r target_name; do
     artifact_name="$(trim "${artifact_name}")"
     [[ -n "${artifact_name}" ]] || continue
     if ! find "${artifact_dir}" -maxdepth 1 -type f -name "*${artifact_name}" | grep -q .; then
+      if openwrt_should_execute_collect; then
+        exit_with VERIFY_ARTIFACT_MISSING "Expected artifact missing after collection for ${target_name}: ${artifact_name}"
+      fi
       log_warn "Expected artifact not present yet for ${target_name}: ${artifact_name}"
     fi
   done <"$(openwrt_artifact_manifest_path "${target_name}")"

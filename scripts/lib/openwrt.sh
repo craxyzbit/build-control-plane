@@ -261,6 +261,25 @@ openwrt_collect_pipeline_command_file() {
   printf '%s/commands/collect-openwrt-targets.sh\n' "$(state_dir)"
 }
 
+openwrt_bool_enabled() {
+  case "${1:-}" in
+    1|true|TRUE|yes|YES|on|ON)
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+openwrt_should_execute_build() {
+  openwrt_bool_enabled "${OPENWRT_EXECUTE_BUILD:-false}"
+}
+
+openwrt_should_execute_collect() {
+  openwrt_bool_enabled "${OPENWRT_EXECUTE_COLLECT:-false}"
+}
+
 openwrt_private_plan_source_path() {
   if [[ -n "${PRIVATE_PLAN_PATH:-}" ]]; then
     printf '%s\n' "${PRIVATE_PLAN_PATH}"
@@ -300,9 +319,9 @@ openwrt_materialize_private_plan() {
   runtime_file="$(openwrt_runtime_private_plan_path)"
   mkdir -p "${runtime_dir}"
 
-  if [[ -n "${OPENWRT_PRIVATE_PLAN_B64:-}" ]]; then
+  if [[ -n "${PRIVATE_PLAN_B64:-${OPENWRT_PRIVATE_PLAN_B64:-}}" ]]; then
     openwrt_decode_private_plan_b64 "${runtime_file}" \
-      || exit_with PRIVATE_PLAN_DECODE_FAILED "Failed to decode OPENWRT_PRIVATE_PLAN_B64"
+      || exit_with PRIVATE_PLAN_DECODE_FAILED "Failed to decode PRIVATE_PLAN_B64"
     printf '%s\n' "${runtime_file}"
     return 0
   fi

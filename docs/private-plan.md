@@ -30,7 +30,7 @@ The capability is global to the repository, but the schema is project-defined.
 That means:
 
 - the runtime channel is shared: `PRIVATE_PLAN_PATH` or `PRIVATE_PLAN_B64`
-- the content schema belongs to the selected project
+- the content schema belongs to the selected project and is interpreted only by that project's pipeline
 - `openwrt` is only the first concrete example, not the definition of the feature
 
 ## Delivery Paths
