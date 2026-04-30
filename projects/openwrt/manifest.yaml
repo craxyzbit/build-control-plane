@@ -1,0 +1,21 @@
+project:
+  name: openwrt
+  kind: firmware-image
+  family: openwrt
+
+upstream:
+  source: https://downloads.openwrt.org/
+  resolver: openwrt-release-index
+  fetch_strategy: mixed
+
+version_policy:
+  selection: manual
+  allowed_channels:
+    - stable
+    - snapshot
+
+contracts:
+  target_dir: targets/
+  package_sets_dir: package-sets/
+  public_files_dir: files/common/
+  private_files_dir: files/private/

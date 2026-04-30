@@ -1,0 +1,7 @@
+bash
+ca-bundle
+ca-certificates
+coreutils
+curl
+jq
+procps-ng
