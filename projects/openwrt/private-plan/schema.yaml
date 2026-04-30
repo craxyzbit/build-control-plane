@@ -1,0 +1,14 @@
+version: 1
+kind: openwrt-private-plan
+
+global:
+  extra_packages:
+    - package-name
+
+targets:
+  qemu-x86-64:
+    extra_packages:
+      - package-name
+  nanopi-r2s-arm64:
+    extra_packages:
+      - package-name
