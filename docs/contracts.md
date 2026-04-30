@@ -43,6 +43,19 @@ Purpose:
 - allows public and private package separation
 - avoids mixing operator-specific runtime choices into shared history
 
+### Private Plan Contract
+
+File:
+
+- repo runtime channel: `PRIVATE_PLAN_PATH` or `PRIVATE_PLAN_B64`
+- project schema: `projects/<name>/...`
+
+Purpose:
+
+- injects non-secret, non-committed runtime customization
+- stays outside git history
+- remains project-shaped instead of forcing one schema across the whole repository
+
 ## Bootstrap DSL
 
 ```yaml

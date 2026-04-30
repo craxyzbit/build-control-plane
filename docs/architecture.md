@@ -29,6 +29,7 @@ The goal is that a human operator and an AI agent can both infer:
 
 - Cognitive: meaning, scope, onboarding, glossary, contracts
 - Delivery: packaging metadata, runtime hooks, image templates
+  Delivery backends are optional. A project may use `nFPM`, container packaging, direct image outputs, or another backend that matches the artifact.
 - Orchestration: GitHub Actions dispatch, matrix, artifact upload
 - Execution: shell pipeline, resolvers, fetch, build, verify
 
@@ -45,6 +46,16 @@ The goal is that a human operator and an AI agent can both infer:
 - Agents begin from constraints, contracts, and modification boundaries.
 
 That is why this repo keeps both `README.md` and `AGENTS.md`, and why `docs/` should contain explicit onboarding for both audiences.
+
+## Delivery Backends
+
+The delivery layer is capability-based, not tool-first.
+
+- `nFPM` is one backend for Linux package outputs.
+- container templates are another backend.
+- firmware or disk-image projects may bypass package managers entirely.
+
+A project should use the smallest delivery backend that matches its artifact shape.
 
 ## Practical Note
 

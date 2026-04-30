@@ -19,7 +19,7 @@ on:
         description: OpenWrt version when channel=stable, for example 25.12.2
         required: false
         type: string
-      openwrt_private_plan_b64:
+      private_plan_b64:
         description: Optional base64-encoded private plan for non-secret operator preferences
         required: false
         type: string
@@ -45,6 +45,6 @@ jobs:
           PROJECT: ${{ inputs.project }}
           OPENWRT_CHANNEL: ${{ inputs.openwrt_channel }}
           OPENWRT_VERSION: ${{ inputs.openwrt_version }}
-          OPENWRT_PRIVATE_PLAN_B64: ${{ inputs.openwrt_private_plan_b64 }}
+          PRIVATE_PLAN_B64: ${{ inputs.private_plan_b64 }}
           OPENWRT_AUTO_FETCH: ${{ inputs.openwrt_auto_fetch }}
         run: ./scripts/run.sh

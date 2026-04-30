@@ -17,6 +17,8 @@ These files are:
 - intentionally ignored by git
 - allowed to differ between local test runs and GitHub Actions runs
 
+Runtime state can also include materialized private plan files decoded or copied for one run. Those are execution artifacts, not repository contracts.
+
 ## What Counts As Real Contract
 
 Long-lived project meaning belongs in tracked files such as:
