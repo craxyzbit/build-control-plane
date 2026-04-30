@@ -38,6 +38,14 @@ The directory structure follows a cognitive architecture so both audiences can a
 
 Read [architecture.md](/Users/lixo/projects/build-control-plane/docs/architecture.md), [scope.md](/Users/lixo/projects/build-control-plane/docs/scope.md), and [onboarding-human.md](/Users/lixo/projects/build-control-plane/docs/onboarding-human.md) first.
 
+## Shared Runtime Capabilities
+
+- `PRIVATE_PLAN` is a repo-wide runtime injection channel for non-secret, non-committed customization.
+- schemas are project-defined, not repo-global.
+- `openwrt` is the first example consumer of this capability.
+
+Read [private-plan.md](/Users/lixo/projects/build-control-plane/docs/private-plan.md) and [runtime-state.md](/Users/lixo/projects/build-control-plane/docs/runtime-state.md) for the runtime boundary.
+
 ## Repository Layout
 
 - `docs/`: cognitive layer and onboarding

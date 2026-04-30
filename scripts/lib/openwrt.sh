@@ -262,6 +262,11 @@ openwrt_collect_pipeline_command_file() {
 }
 
 openwrt_private_plan_source_path() {
+  if [[ -n "${PRIVATE_PLAN_PATH:-}" ]]; then
+    printf '%s\n' "${PRIVATE_PLAN_PATH}"
+    return 0
+  fi
+
   if [[ -n "${OPENWRT_PRIVATE_PLAN_PATH:-}" ]]; then
     printf '%s\n' "${OPENWRT_PRIVATE_PLAN_PATH}"
     return 0
@@ -277,11 +282,12 @@ openwrt_private_plan_source_path() {
 
 openwrt_decode_private_plan_b64() {
   local output_path="$1"
-  [[ -n "${OPENWRT_PRIVATE_PLAN_B64:-}" ]] || return 1
+  local payload="${PRIVATE_PLAN_B64:-${OPENWRT_PRIVATE_PLAN_B64:-}}"
+  [[ -n "${payload}" ]] || return 1
 
   if command -v base64 >/dev/null 2>&1; then
-    printf '%s' "${OPENWRT_PRIVATE_PLAN_B64}" | base64 --decode >"${output_path}" 2>/dev/null \
-      || printf '%s' "${OPENWRT_PRIVATE_PLAN_B64}" | base64 -D >"${output_path}" 2>/dev/null
+    printf '%s' "${payload}" | base64 --decode >"${output_path}" 2>/dev/null \
+      || printf '%s' "${payload}" | base64 -D >"${output_path}" 2>/dev/null
     return $?
   fi
 

@@ -29,10 +29,12 @@ Keep operator-sensitive runtime additions out of git history by using those priv
 
 ## Private Plan Input
 
-You can also inject a private plan at runtime without committing it:
+`openwrt` consumes the repository-wide `PRIVATE_PLAN` capability with its own schema.
 
-- local run: set `OPENWRT_PRIVATE_PLAN_PATH`
-- GitHub Actions: pass `openwrt_private_plan_b64` in `workflow_dispatch`
+You can inject an OpenWrt private plan at runtime without committing it:
+
+- local run: set `PRIVATE_PLAN_PATH`
+- GitHub Actions: pass `private_plan_b64` in `workflow_dispatch`
 
 This is for non-secret operator preferences that should stay out of commit history. GitHub Actions inputs are still visible in run metadata, so do not use this path for credentials or true secrets.
 
