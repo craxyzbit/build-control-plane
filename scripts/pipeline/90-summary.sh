@@ -14,6 +14,13 @@ if [[ "${PROJECT}" != "openwrt" ]]; then
 fi
 
 SUMMARY_FILE="$(openwrt_plan_file summary.txt)"
+PUBLIC_DIAGNOSTICS_DIR="$(openwrt_public_diagnostics_dir)"
+PUBLIC_SUMMARY_FILE="${PUBLIC_DIAGNOSTICS_DIR}/summary.txt"
+PUBLIC_README_FILE="${PUBLIC_DIAGNOSTICS_DIR}/README.txt"
+PUBLIC_LOGS_DIR="${PUBLIC_DIAGNOSTICS_DIR}/logs"
+
+mkdir -p "${PUBLIC_DIAGNOSTICS_DIR}"
+mkdir -p "${PUBLIC_LOGS_DIR}"
 
 {
   printf 'OpenWrt pipeline summary\n'
@@ -23,12 +30,31 @@ SUMMARY_FILE="$(openwrt_plan_file summary.txt)"
   printf 'auto_fetch=%s\n' "${OPENWRT_AUTO_FETCH:-false}"
   printf 'execute_build=%s\n' "${OPENWRT_EXECUTE_BUILD:-false}"
   printf 'execute_collect=%s\n' "${OPENWRT_EXECUTE_COLLECT:-false}"
-  printf 'state_dir=%s\n' "$(state_dir)"
-  printf 'resolve_plan=%s\n' "$(openwrt_plan_file resolved.env)"
-  printf 'fetch_plan=%s\n' "$(openwrt_plan_file fetch-plan.txt)"
-  printf 'build_plan=%s\n' "$(openwrt_plan_file build-plan.txt)"
-  printf 'package_plan=%s\n' "$(openwrt_plan_file package-plan.txt)"
-  printf 'overlay_archive=%s\n' "$(openwrt_overlay_archive_path)"
+  printf 'runtime_state_root=dist/%s\n' "${PROJECT}"
+  printf 'resolve_plan=dist/%s/plans/resolved.env\n' "${PROJECT}"
+  printf 'fetch_plan=dist/%s/plans/fetch-plan.txt\n' "${PROJECT}"
+  printf 'build_plan=dist/%s/plans/build-plan.txt\n' "${PROJECT}"
+  printf 'package_plan=dist/%s/plans/package-plan.txt\n' "${PROJECT}"
+  printf 'public_diagnostics=dist/%s/public-diagnostics\n' "${PROJECT}"
 } >"${SUMMARY_FILE}"
+
+cp "${SUMMARY_FILE}" "${PUBLIC_SUMMARY_FILE}"
+
+{
+  printf 'Public diagnostics bundle\n'
+  printf '\n'
+  printf 'This bundle is intentionally minimal for public repositories.\n'
+  printf 'It excludes private plan materializations, generated package manifests,\n'
+  printf 'generated command scripts, private runtime files, and full local state.\n'
+  printf '\n'
+  printf 'Use the local dist tree or a private environment for deeper debugging.\n'
+} >"${PUBLIC_README_FILE}"
+
+for stage_log in 20-resolve 30-fetch 60-verify 90-summary; do
+  log_path="$(state_dir)/logs/${stage_log}.log"
+  if [[ -f "${log_path}" ]]; then
+    cp "${log_path}" "${PUBLIC_LOGS_DIR}/${stage_log}.log"
+  fi
+done
 
 log_info "Wrote OpenWrt summary to ${SUMMARY_FILE}"

@@ -192,6 +192,10 @@ openwrt_release_artifact_dir() {
   printf '%s/releases\n' "$(state_dir)"
 }
 
+openwrt_public_diagnostics_dir() {
+  printf '%s/public-diagnostics\n' "$(state_dir)"
+}
+
 openwrt_source_dir() {
   if [[ -n "${OPENWRT_SOURCE_DIR:-}" ]]; then
     printf '%s\n' "${OPENWRT_SOURCE_DIR}"
