@@ -49,3 +49,12 @@ The OpenWrt pipeline supports three practical modes:
 - artifact collection: set `OPENWRT_EXECUTE_COLLECT=true` after or alongside build execution
 
 The default mode is planning only. This keeps public CI safe by default while still allowing a fully automated source-tree run when the environment is ready.
+
+## Target Selection
+
+Use `OPENWRT_TARGETS` to narrow a run to one or more targets.
+
+- local run: `OPENWRT_TARGETS=qemu-x86-64`
+- GitHub Actions: use the `openwrt_target` dispatch input
+
+For the first real cloud test, prefer `qemu-x86-64`. It produces `ext4-combined.img.gz` first and then converts the raw image into `qcow2` during collection.

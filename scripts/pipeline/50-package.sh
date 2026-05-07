@@ -114,7 +114,7 @@ while IFS= read -r target_name; do
       printf 'qcow2_conversion=%s\n' "${command_file}"
     fi
   } >>"${PACKAGE_PLAN}"
-done < <(openwrt_target_names)
+done < <(openwrt_selected_target_names)
 
 {
   printf '#!/usr/bin/env bash\n'
@@ -126,7 +126,7 @@ done < <(openwrt_target_names)
   printf 'fi\n\n'
   while IFS= read -r target_name; do
     printf '"%s" "${SOURCE_DIR}"\n' "$(openwrt_collect_command_file "${target_name}")"
-  done < <(openwrt_target_names)
+  done < <(openwrt_selected_target_names)
 } >"${COLLECT_PIPELINE_COMMAND}"
 chmod +x "${COLLECT_PIPELINE_COMMAND}"
 

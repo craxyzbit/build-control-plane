@@ -27,6 +27,16 @@ ensure_dir() {
 
 init_runtime_state() {
   ensure_dir "$(state_dir)"
+  rm -rf "$(state_dir)/resolve"
+  rm -rf "$(state_dir)/build"
+  rm -rf "$(state_dir)/package"
+  rm -rf "$(state_dir)/artifacts"
+  rm -rf "$(state_dir)/plans"
+  rm -rf "$(state_dir)/commands"
+  rm -rf "$(state_dir)/tmp"
+  rm -rf "$(state_dir)/private"
+  rm -rf "$(state_dir)/public-diagnostics"
+  rm -rf "$(state_dir)/releases"
   ensure_dir "$(state_dir)/resolve"
   ensure_dir "$(state_dir)/fetch"
   ensure_dir "$(state_dir)/build"
