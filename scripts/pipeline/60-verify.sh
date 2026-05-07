@@ -45,6 +45,6 @@ while IFS= read -r target_name; do
       log_warn "Expected artifact not present yet for ${target_name}: ${artifact_name}"
     fi
   done <"$(openwrt_artifact_manifest_path "${target_name}")"
-done < <(openwrt_target_names)
+done < <(openwrt_selected_target_names)
 
 log_info "Verified OpenWrt pipeline plans and generated inputs"

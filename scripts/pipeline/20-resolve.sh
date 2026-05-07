@@ -14,9 +14,10 @@ if [[ "${PROJECT}" != "openwrt" ]]; then
   exit 0
 fi
 
-require_env OPENWRT_VERSION
-
 CHANNEL="$(openwrt_release_channel)"
+if [[ "${CHANNEL}" == "stable" ]]; then
+  require_env OPENWRT_VERSION
+fi
 VERSION="$(openwrt_release_version)"
 BASE_URL="$(openwrt_release_base_url)"
 SOURCE_GIT_URL="$(openwrt_source_git_url)"
@@ -32,6 +33,7 @@ persist_env OPENWRT_SOURCE_REF "${SOURCE_REF}"
   printf 'project=%s\n' "${PROJECT}"
   printf 'openwrt_channel=%s\n' "${CHANNEL}"
   printf 'openwrt_version=%s\n' "${VERSION}"
+  printf 'selected_targets=%s\n' "$(openwrt_selected_target_names | paste -sd ',' -)"
   printf 'release_base_url=%s\n' "${BASE_URL}"
   printf 'source_git_url=%s\n' "${SOURCE_GIT_URL}"
   printf 'source_ref=%s\n' "${SOURCE_REF}"
@@ -52,6 +54,6 @@ while IFS= read -r target_name; do
     printf 'OPENWRT_ARCH=%q\n' "${arch}"
     printf 'TARGET_RELEASE_URL=%q\n' "${BASE_URL}/targets/${target_family}/${subtarget}"
   } >"$(openwrt_target_plan_path "${target_name}")"
-done < <(openwrt_target_names)
+done < <(openwrt_selected_target_names)
 
 log_info "Resolved OpenWrt release inputs for version=${VERSION} channel=${CHANNEL}"

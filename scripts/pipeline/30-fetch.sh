@@ -31,7 +31,7 @@ FETCH_COMMAND="$(openwrt_fetch_command_file)"
     # shellcheck disable=SC1090
     source "$(openwrt_target_plan_path "${target_name}")"
     printf '%s -> %s\n' "${TARGET_NAME}" "${TARGET_RELEASE_URL}"
-  done < <(openwrt_target_names)
+  done < <(openwrt_selected_target_names)
 } >"${FETCH_PLAN}"
 
 {

@@ -21,6 +21,9 @@ persist_env PROJECT_DIR "${PROJECT_DIR}"
 persist_env STATE_DIR "$(state_dir)"
 
 if [[ "${PROJECT}" == "openwrt" ]]; then
+  if [[ -n "${OPENWRT_TARGETS:-}" ]]; then
+    persist_env OPENWRT_TARGETS "${OPENWRT_TARGETS}"
+  fi
   if private_plan_file="$(openwrt_materialize_private_plan 2>/dev/null)"; then
     openwrt_private_plan_validate "${private_plan_file}"
     persist_env OPENWRT_PRIVATE_PLAN_FILE "${private_plan_file}"

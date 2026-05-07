@@ -75,6 +75,34 @@ openwrt_target_names() {
   done < <(openwrt_target_files)
 }
 
+openwrt_selected_target_names() {
+  local selector trimmed token found candidate
+
+  selector="${OPENWRT_TARGETS:-}"
+  if [[ -z "${selector}" ]]; then
+    openwrt_target_names
+    return 0
+  fi
+
+  selector="${selector//,/ }"
+  for token in ${selector}; do
+    trimmed="$(trim "${token}")"
+    [[ -n "${trimmed}" ]] || continue
+    found=0
+    while IFS= read -r candidate; do
+      if [[ "${candidate}" == "${trimmed}" ]]; then
+        printf '%s\n' "${candidate}"
+        found=1
+        break
+      fi
+    done < <(openwrt_target_names)
+
+    if [[ "${found}" -ne 1 ]]; then
+      exit_with OPENWRT_TARGET_UNKNOWN "Unknown OpenWrt target selector: ${trimmed}"
+    fi
+  done | awk '!seen[$0]++'
+}
+
 openwrt_target_file() {
   printf '%s/%s.yaml\n' "$(openwrt_targets_dir)" "$1"
 }

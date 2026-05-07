@@ -10,6 +10,7 @@ source "${ROOT_DIR}/scripts/lib/log.sh"
 
 PROJECT_NAME="${PROJECT:-unknown}"
 LOG_DIR="${ROOT_DIR}/dist/${PROJECT_NAME}/logs"
+rm -rf "${LOG_DIR}"
 mkdir -p "${LOG_DIR}"
 
 log_info "Starting pipeline for project=${PROJECT:-<unset>}"

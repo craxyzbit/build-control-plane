@@ -16,9 +16,18 @@ on:
           - stable
           - snapshot
       openwrt_version:
-        description: OpenWrt version when channel=stable, for example 25.12.2
+        description: OpenWrt version when channel=stable, for example 25.12.3
         required: false
+        default: 25.12.3
         type: string
+      openwrt_target:
+        description: OpenWrt target to run in this workflow
+        required: false
+        default: qemu-x86-64
+        type: choice
+        options:
+          - qemu-x86-64
+          - nanopi-r2s-arm64
       private_plan_b64:
         description: Optional base64-encoded private plan for non-secret operator preferences
         required: false
@@ -51,6 +60,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Free runner disk space for OpenWrt builds
+        if: inputs.project == 'openwrt' && inputs.openwrt_execute_build
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          df -h
+
+      - name: Install OpenWrt build prerequisites
+        if: inputs.project == 'openwrt' && (inputs.openwrt_execute_build || inputs.openwrt_execute_collect)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
+            bzip2 ccache cmake cpio curl device-tree-compiler file flex gawk gcc-multilib \
+            g++-multilib gettext genisoimage git gperf haveged help2man intltool libelf-dev \
+            libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev \
+            libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev \
+            libtool lrzsz msmtp ninja-build p7zip p7zip-full pkgconf python3 python3-pyelftools \
+            python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo \
+            uglifyjs unzip wget xmlto xxd zlib1g-dev
+
       - name: Prepare shell permissions
         run: chmod +x scripts/run.sh scripts/pipeline/*.sh
 
@@ -59,6 +91,7 @@ jobs:
           PROJECT: ${{ inputs.project }}
           OPENWRT_CHANNEL: ${{ inputs.openwrt_channel }}
           OPENWRT_VERSION: ${{ inputs.openwrt_version }}
+          OPENWRT_TARGETS: ${{ inputs.openwrt_target }}
           PRIVATE_PLAN_B64: ${{ inputs.private_plan_b64 }}
           OPENWRT_AUTO_FETCH: ${{ inputs.openwrt_auto_fetch }}
           OPENWRT_EXECUTE_BUILD: ${{ inputs.openwrt_execute_build }}

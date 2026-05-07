@@ -143,7 +143,7 @@ while IFS= read -r target_name; do
     printf 'command=%s\n' "${command_file}"
     printf 'build_log=%s\n' "${build_log}"
   } >>"${BUILD_PLAN}"
-done < <(openwrt_target_names)
+done < <(openwrt_selected_target_names)
 
 {
   printf '#!/usr/bin/env bash\n'
@@ -155,7 +155,7 @@ done < <(openwrt_target_names)
   printf 'fi\n\n'
   while IFS= read -r target_name; do
     printf '"%s" "${SOURCE_DIR}"\n' "$(openwrt_command_file "build-${target_name}.sh")"
-  done < <(openwrt_target_names)
+  done < <(openwrt_selected_target_names)
 } >"${PIPELINE_COMMAND}"
 chmod +x "${PIPELINE_COMMAND}"
 
