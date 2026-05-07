@@ -43,6 +43,8 @@ while IFS= read -r target_name; do
   kernel_fragment="$(openwrt_kernel_fragment_path "${target_name}")"
   seed_config="$(openwrt_target_seed_config_path "${target_name}")"
   prepare_command="$(openwrt_prepare_command_file "${target_name}")"
+  prepare_log="$(openwrt_prepare_log_path "${target_name}")"
+  build_log="$(openwrt_build_log_path "${target_name}")"
   command_file="$(openwrt_command_file "build-${target_name}.sh")"
   # shellcheck disable=SC1090
   source "$(openwrt_target_plan_path "${target_name}")"
@@ -92,10 +94,13 @@ while IFS= read -r target_name; do
     printf '#!/usr/bin/env bash\n'
     printf 'set -euo pipefail\n\n'
     printf 'SOURCE_DIR="${1:-%s}"\n' "${OPENWRT_EFFECTIVE_SOURCE_DIR:-}"
+    printf 'LOG_FILE="%s"\n' "${prepare_log}"
     printf 'if [[ -z "${SOURCE_DIR}" || ! -d "${SOURCE_DIR}" ]]; then\n'
     printf '  echo "OpenWrt source directory is required." >&2\n'
     printf '  exit 1\n'
     printf 'fi\n\n'
+    printf 'mkdir -p "$(dirname "${LOG_FILE}")"\n'
+    printf 'exec > >(tee -a "${LOG_FILE}") 2>&1\n\n'
     printf 'cd "${SOURCE_DIR}"\n'
     printf 'rm -rf files\n'
     printf 'mkdir -p files\n'
@@ -112,10 +117,13 @@ while IFS= read -r target_name; do
     printf '#!/usr/bin/env bash\n'
     printf 'set -euo pipefail\n\n'
     printf 'SOURCE_DIR="${1:-%s}"\n' "${OPENWRT_EFFECTIVE_SOURCE_DIR:-}"
+    printf 'LOG_FILE="%s"\n' "${build_log}"
     printf 'if [[ -z "${SOURCE_DIR}" || ! -d "${SOURCE_DIR}" ]]; then\n'
     printf '  echo "OpenWrt source directory is required." >&2\n'
     printf '  exit 1\n'
     printf 'fi\n\n'
+    printf 'mkdir -p "$(dirname "${LOG_FILE}")"\n'
+    printf 'exec > >(tee -a "${LOG_FILE}") 2>&1\n\n'
     printf 'BUILD_JOBS="${BUILD_JOBS:-$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)}"\n'
     printf '"%s" "${SOURCE_DIR}"\n' "${prepare_command}"
     printf 'cd "${SOURCE_DIR}"\n'
@@ -131,7 +139,9 @@ while IFS= read -r target_name; do
     printf 'kernel_fragment=%s\n' "${kernel_fragment}"
     printf 'seed_config=%s\n' "${seed_config}"
     printf 'prepare=%s\n' "${prepare_command}"
+    printf 'prepare_log=%s\n' "${prepare_log}"
     printf 'command=%s\n' "${command_file}"
+    printf 'build_log=%s\n' "${build_log}"
   } >>"${BUILD_PLAN}"
 done < <(openwrt_target_names)
 

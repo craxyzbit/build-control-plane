@@ -29,6 +29,8 @@ while IFS= read -r target_name; do
   artifact_manifest="$(openwrt_artifact_manifest_path "${target_name}")"
   target_artifact_dir="$(state_dir)/artifacts/${target_name}"
   collect_command="$(openwrt_collect_command_file "${target_name}")"
+  collect_log="$(openwrt_collect_log_path "${target_name}")"
+  artifact_report="$(openwrt_artifact_report_path "${target_name}")"
   # shellcheck disable=SC1090
   source "$(openwrt_target_plan_path "${target_name}")"
 
@@ -61,7 +63,11 @@ while IFS= read -r target_name; do
     printf 'set -euo pipefail\n\n'
     printf 'SOURCE_DIR="${1:-%s}"\n' "${OPENWRT_EFFECTIVE_SOURCE_DIR:-}"
     printf 'ARTIFACT_DIR="%s"\n' "${target_artifact_dir}"
+    printf 'LOG_FILE="%s"\n' "${collect_log}"
+    printf 'REPORT_FILE="%s"\n' "${artifact_report}"
     printf 'TARGET_BIN="${SOURCE_DIR}/bin/targets/%s/%s"\n' "${OPENWRT_TARGET}" "${OPENWRT_SUBTARGET}"
+    printf 'mkdir -p "$(dirname "${LOG_FILE}")"\n'
+    printf 'exec > >(tee -a "${LOG_FILE}") 2>&1\n'
     printf 'mkdir -p "${ARTIFACT_DIR}"\n'
     printf 'if [[ ! -d "${TARGET_BIN}" ]]; then\n'
     printf '  echo "Target output directory not found: ${TARGET_BIN}" >&2\n'
@@ -83,6 +89,18 @@ while IFS= read -r target_name; do
       printf '  "%s" "${RAW_IMAGE}" "${ARTIFACT_DIR}/%s.qcow2"\n' "${command_file}" "${target_name}"
       printf 'fi\n'
     fi
+    printf ': > "${REPORT_FILE}"\n'
+    printf 'for artifact in "${ARTIFACT_DIR}"/*; do\n'
+    printf '  [[ -f "${artifact}" ]] || continue\n'
+    printf '  echo "file=$(basename "${artifact}")" >> "${REPORT_FILE}"\n'
+    printf '  echo "size_bytes=$(wc -c < "${artifact}" | tr -d \" \")" >> "${REPORT_FILE}"\n'
+    printf '  if command -v sha256sum >/dev/null 2>&1; then\n'
+    printf '    echo "sha256=$(sha256sum "${artifact}" | awk '"'"'{print $1}'"'"')" >> "${REPORT_FILE}"\n'
+    printf '  elif command -v shasum >/dev/null 2>&1; then\n'
+    printf '    echo "sha256=$(shasum -a 256 "${artifact}" | awk '"'"'{print $1}'"'"')" >> "${REPORT_FILE}"\n'
+    printf '  fi\n'
+    printf '  echo >> "${REPORT_FILE}"\n'
+    printf 'done\n'
   } >"${collect_command}"
   chmod +x "${collect_command}"
 
@@ -90,6 +108,8 @@ while IFS= read -r target_name; do
     printf '\n[%s]\n' "${target_name}"
     printf 'artifact_manifest=%s\n' "${artifact_manifest}"
     printf 'collect=%s\n' "${collect_command}"
+    printf 'collect_log=%s\n' "${collect_log}"
+    printf 'artifact_report=%s\n' "${artifact_report}"
     if [[ "${target_name}" == "qemu-x86-64" ]]; then
       printf 'qcow2_conversion=%s\n' "${command_file}"
     fi

@@ -196,6 +196,22 @@ openwrt_public_diagnostics_dir() {
   printf '%s/public-diagnostics\n' "$(state_dir)"
 }
 
+openwrt_prepare_log_path() {
+  printf '%s/logs/prepare-%s.log\n' "$(state_dir)" "$1"
+}
+
+openwrt_build_log_path() {
+  printf '%s/logs/build-%s.log\n' "$(state_dir)" "$1"
+}
+
+openwrt_collect_log_path() {
+  printf '%s/logs/collect-%s.log\n' "$(state_dir)" "$1"
+}
+
+openwrt_artifact_report_path() {
+  printf '%s/artifacts/report-%s.txt\n' "$(state_dir)" "$1"
+}
+
 openwrt_source_dir() {
   if [[ -n "${OPENWRT_SOURCE_DIR:-}" ]]; then
     printf '%s\n' "${OPENWRT_SOURCE_DIR}"
