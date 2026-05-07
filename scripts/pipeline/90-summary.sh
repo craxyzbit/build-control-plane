@@ -37,6 +37,7 @@ mkdir -p "${PUBLIC_LOGS_DIR}"
   printf 'build_plan=dist/%s/plans/build-plan.txt\n' "${PROJECT}"
   printf 'package_plan=dist/%s/plans/package-plan.txt\n' "${PROJECT}"
   printf 'public_diagnostics=dist/%s/public-diagnostics\n' "${PROJECT}"
+  printf 'release_artifacts=dist/%s/releases\n' "${PROJECT}"
 } >"${SUMMARY_FILE}"
 
 cp "${SUMMARY_FILE}" "${PUBLIC_SUMMARY_FILE}"

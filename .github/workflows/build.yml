@@ -113,3 +113,11 @@ jobs:
           name: ${{ inputs.project }}-public-diagnostics-${{ github.run_id }}
           path: dist/${{ inputs.project }}/public-diagnostics
           if-no-files-found: warn
+
+      - name: Upload OpenWrt release artifacts
+        if: success() && inputs.project == 'openwrt' && inputs.openwrt_execute_collect
+        uses: actions/upload-artifact@v4
+        with:
+          name: openwrt-${{ inputs.openwrt_target }}-${{ inputs.openwrt_version }}-${{ github.run_id }}
+          path: dist/${{ inputs.project }}/releases/${{ inputs.openwrt_target }}
+          if-no-files-found: error

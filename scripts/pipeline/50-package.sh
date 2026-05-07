@@ -28,6 +28,7 @@ while IFS= read -r target_name; do
   target_file="$(openwrt_target_file "${target_name}")"
   artifact_manifest="$(openwrt_artifact_manifest_path "${target_name}")"
   target_artifact_dir="$(state_dir)/artifacts/${target_name}"
+  target_release_dir="${RELEASE_DIR}/${target_name}"
   collect_command="$(openwrt_collect_command_file "${target_name}")"
   collect_log="$(openwrt_collect_log_path "${target_name}")"
   artifact_report="$(openwrt_artifact_report_path "${target_name}")"
@@ -35,6 +36,7 @@ while IFS= read -r target_name; do
   source "$(openwrt_target_plan_path "${target_name}")"
 
   mkdir -p "${target_artifact_dir}"
+  mkdir -p "${target_release_dir}"
   : >"${artifact_manifest}"
   while IFS= read -r artifact_name; do
     artifact_name="$(trim "${artifact_name}")"
@@ -63,12 +65,14 @@ while IFS= read -r target_name; do
     printf 'set -euo pipefail\n\n'
     printf 'SOURCE_DIR="${1:-%s}"\n' "${OPENWRT_EFFECTIVE_SOURCE_DIR:-}"
     printf 'ARTIFACT_DIR="%s"\n' "${target_artifact_dir}"
+    printf 'RELEASE_DIR="%s"\n' "${target_release_dir}"
     printf 'LOG_FILE="%s"\n' "${collect_log}"
     printf 'REPORT_FILE="%s"\n' "${artifact_report}"
     printf 'TARGET_BIN="${SOURCE_DIR}/bin/targets/%s/%s"\n' "${OPENWRT_TARGET}" "${OPENWRT_SUBTARGET}"
     printf 'mkdir -p "$(dirname "${LOG_FILE}")"\n'
     printf 'exec > >(tee -a "${LOG_FILE}") 2>&1\n'
     printf 'mkdir -p "${ARTIFACT_DIR}"\n'
+    printf 'mkdir -p "${RELEASE_DIR}"\n'
     printf 'if [[ ! -d "${TARGET_BIN}" ]]; then\n'
     printf '  echo "Target output directory not found: ${TARGET_BIN}" >&2\n'
     printf '  exit 1\n'
@@ -101,6 +105,8 @@ while IFS= read -r target_name; do
     printf '  fi\n'
     printf '  echo >> "${REPORT_FILE}"\n'
     printf 'done\n'
+    printf 'find "${ARTIFACT_DIR}" -maxdepth 1 -type f -exec cp {} "${RELEASE_DIR}/" \\;\n'
+    printf 'cp "${REPORT_FILE}" "${RELEASE_DIR}/artifact-report.txt"\n'
   } >"${collect_command}"
   chmod +x "${collect_command}"
 
@@ -110,6 +116,7 @@ while IFS= read -r target_name; do
     printf 'collect=%s\n' "${collect_command}"
     printf 'collect_log=%s\n' "${collect_log}"
     printf 'artifact_report=%s\n' "${artifact_report}"
+    printf 'release_bundle=%s\n' "${target_release_dir}"
     if [[ "${target_name}" == "qemu-x86-64" ]]; then
       printf 'qcow2_conversion=%s\n' "${command_file}"
     fi
