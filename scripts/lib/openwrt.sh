@@ -143,16 +143,35 @@ openwrt_source_git_url() {
   printf '%s\n' "${OPENWRT_SOURCE_GIT_URL:-https://git.openwrt.org/openwrt/openwrt.git}"
 }
 
-openwrt_source_ref() {
-  local channel series
+openwrt_source_ref_kind() {
+  local channel
   channel="$(openwrt_release_channel)"
-  series="$(openwrt_release_series)"
   case "${channel}" in
     stable)
-      printf 'openwrt-%s\n' "${series}"
+      printf 'tag\n'
+      ;;
+    snapshot)
+      printf 'branch\n'
+      ;;
+    *)
+      exit_with OPENWRT_CHANNEL_UNSUPPORTED "Unsupported OPENWRT_CHANNEL=${channel}"
+      ;;
+  esac
+}
+
+openwrt_source_ref() {
+  local channel version
+  channel="$(openwrt_release_channel)"
+  version="$(openwrt_release_version)"
+  case "${channel}" in
+    stable)
+      printf 'v%s\n' "${version}"
       ;;
     snapshot)
       printf 'main\n'
+      ;;
+    *)
+      exit_with OPENWRT_CHANNEL_UNSUPPORTED "Unsupported OPENWRT_CHANNEL=${channel}"
       ;;
   esac
 }
@@ -186,6 +205,14 @@ openwrt_host_tools() {
 
 openwrt_kernel_fragment_path() {
   printf '%s/kernel-config-%s.fragment\n' "$(openwrt_build_dir)" "$1"
+}
+
+openwrt_kernel_symbol_from_raw() {
+  local raw_symbol="$1"
+  local normalized
+  normalized="$(trim "${raw_symbol}")"
+  normalized="${normalized#CONFIG_}"
+  printf 'CONFIG_KERNEL_%s' "${normalized}"
 }
 
 openwrt_package_manifest_path() {

@@ -76,7 +76,9 @@ while IFS= read -r target_name; do
   while IFS= read -r cfg; do
     cfg="$(trim "${cfg}")"
     [[ -n "${cfg}" ]] || continue
-    printf '%s\n' "${cfg}" >>"${kernel_fragment}"
+    config_name="${cfg%%=*}"
+    config_value="${cfg#*=}"
+    printf '%s=%s\n' "$(openwrt_kernel_symbol_from_raw "${config_name}")" "${config_value}" >>"${kernel_fragment}"
   done < <(openwrt_yaml_list "${target_file}" "required_config")
 
   {

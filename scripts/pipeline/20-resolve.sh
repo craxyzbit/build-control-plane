@@ -21,12 +21,14 @@ fi
 VERSION="$(openwrt_release_version)"
 BASE_URL="$(openwrt_release_base_url)"
 SOURCE_GIT_URL="$(openwrt_source_git_url)"
+SOURCE_REF_KIND="$(openwrt_source_ref_kind)"
 SOURCE_REF="$(openwrt_source_ref)"
 
 persist_env OPENWRT_CHANNEL "${CHANNEL}"
 persist_env OPENWRT_VERSION "${VERSION}"
 persist_env OPENWRT_BASE_URL "${BASE_URL}"
 persist_env OPENWRT_SOURCE_GIT_URL "${SOURCE_GIT_URL}"
+persist_env OPENWRT_SOURCE_REF_KIND "${SOURCE_REF_KIND}"
 persist_env OPENWRT_SOURCE_REF "${SOURCE_REF}"
 
 {
@@ -36,6 +38,7 @@ persist_env OPENWRT_SOURCE_REF "${SOURCE_REF}"
   printf 'selected_targets=%s\n' "$(openwrt_selected_target_names | paste -sd ',' -)"
   printf 'release_base_url=%s\n' "${BASE_URL}"
   printf 'source_git_url=%s\n' "${SOURCE_GIT_URL}"
+  printf 'source_ref_kind=%s\n' "${SOURCE_REF_KIND}"
   printf 'source_ref=%s\n' "${SOURCE_REF}"
 } >"$(openwrt_plan_file resolved.env)"
 
