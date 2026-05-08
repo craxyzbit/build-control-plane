@@ -1,0 +1,63 @@
+name: OpenWrt
+
+on:
+  workflow_dispatch:
+    inputs:
+      openwrt_channel:
+        description: OpenWrt channel
+        required: false
+        default: stable
+        type: choice
+        options:
+          - stable
+          - snapshot
+      openwrt_version:
+        description: OpenWrt version when channel=stable, for example 25.12.3
+        required: false
+        default: 25.12.3
+        type: string
+      openwrt_target:
+        description: OpenWrt target to run in this workflow
+        required: false
+        default: qemu-x86-64
+        type: choice
+        options:
+          - qemu-x86-64
+          - nanopi-r2s-arm64
+      private_plan_b64:
+        description: Optional base64-encoded private plan for non-secret operator preferences
+        required: false
+        type: string
+      openwrt_auto_fetch:
+        description: Clone or refresh OpenWrt source automatically during pipeline run
+        required: false
+        default: true
+        type: boolean
+      openwrt_execute_build:
+        description: Execute generated OpenWrt build commands when a source tree is available
+        required: false
+        default: true
+        type: boolean
+      openwrt_execute_collect:
+        description: Collect build artifacts after a successful OpenWrt build
+        required: false
+        default: true
+        type: boolean
+      openwrt_build_jobs:
+        description: Optional job count passed to OpenWrt make
+        required: false
+        type: string
+
+jobs:
+  openwrt:
+    uses: ./.github/workflows/project-runner.yml
+    with:
+      project: openwrt
+      private_plan_b64: ${{ inputs.private_plan_b64 }}
+      openwrt_channel: ${{ inputs.openwrt_channel }}
+      openwrt_version: ${{ inputs.openwrt_version }}
+      openwrt_target: ${{ inputs.openwrt_target }}
+      openwrt_auto_fetch: ${{ inputs.openwrt_auto_fetch }}
+      openwrt_execute_build: ${{ inputs.openwrt_execute_build }}
+      openwrt_execute_collect: ${{ inputs.openwrt_execute_collect }}
+      openwrt_build_jobs: ${{ inputs.openwrt_build_jobs }}

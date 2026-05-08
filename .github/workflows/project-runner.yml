@@ -1,36 +1,30 @@
-name: Build
+name: Project Runner
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       project:
         description: Project contract name under projects/
         required: true
         type: string
+      private_plan_b64:
+        description: Optional base64-encoded private plan for non-secret operator preferences
+        required: false
+        type: string
       openwrt_channel:
-        description: OpenWrt channel for the openwrt project
+        description: OpenWrt channel
         required: false
         default: stable
-        type: choice
-        options:
-          - stable
-          - snapshot
+        type: string
       openwrt_version:
-        description: OpenWrt version when channel=stable, for example 25.12.3
+        description: OpenWrt version when channel=stable
         required: false
         default: 25.12.3
         type: string
       openwrt_target:
-        description: OpenWrt target to run in this workflow
+        description: OpenWrt target selector
         required: false
         default: qemu-x86-64
-        type: choice
-        options:
-          - qemu-x86-64
-          - nanopi-r2s-arm64
-      private_plan_b64:
-        description: Optional base64-encoded private plan for non-secret operator preferences
-        required: false
         type: string
       openwrt_auto_fetch:
         description: Clone or refresh OpenWrt source automatically during pipeline run
@@ -89,10 +83,10 @@ jobs:
       - name: Execute pipeline
         env:
           PROJECT: ${{ inputs.project }}
+          PRIVATE_PLAN_B64: ${{ inputs.private_plan_b64 }}
           OPENWRT_CHANNEL: ${{ inputs.openwrt_channel }}
           OPENWRT_VERSION: ${{ inputs.openwrt_version }}
           OPENWRT_TARGETS: ${{ inputs.openwrt_target }}
-          PRIVATE_PLAN_B64: ${{ inputs.private_plan_b64 }}
           OPENWRT_AUTO_FETCH: ${{ inputs.openwrt_auto_fetch }}
           OPENWRT_EXECUTE_BUILD: ${{ inputs.openwrt_execute_build }}
           OPENWRT_EXECUTE_COLLECT: ${{ inputs.openwrt_execute_collect }}

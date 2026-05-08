@@ -55,7 +55,8 @@ Read [private-plan.md](/Users/lixo/projects/build-control-plane/docs/private-pla
 - `scripts/lib/`: shared execution helpers
 - `scripts/hooks/`: target runtime integration hooks
 - `delivery/`: delivery templates and packaging metadata
-- `.github/workflows/`: executable GitHub Actions workflows
+- `.github/workflows/openwrt.yml`: project-facing GitHub Actions entrypoint
+- `.github/workflows/project-runner.yml`: reusable execution workflow shared by project-facing entrypoints
 - `workflows/`: human-readable orchestration contracts
 
 ## Human Start Here

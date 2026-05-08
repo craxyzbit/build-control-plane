@@ -34,7 +34,7 @@ Keep operator-sensitive runtime additions out of git history by using those priv
 You can inject an OpenWrt private plan at runtime without committing it:
 
 - local run: set `PRIVATE_PLAN_PATH`
-- GitHub Actions: pass `private_plan_b64` in `workflow_dispatch`
+- GitHub Actions: pass `private_plan_b64` in the `OpenWrt` workflow dispatch form
 
 This is for non-secret operator preferences that should stay out of commit history. GitHub Actions inputs are still visible in run metadata, so do not use this path for credentials or true secrets.
 
@@ -55,6 +55,6 @@ The default mode is planning only. This keeps public CI safe by default while st
 Use `OPENWRT_TARGETS` to narrow a run to one or more targets.
 
 - local run: `OPENWRT_TARGETS=qemu-x86-64`
-- GitHub Actions: use the `openwrt_target` dispatch input
+- GitHub Actions: use the `OpenWrt` workflow and its `openwrt_target` dispatch input
 
 For the first real cloud test, prefer `qemu-x86-64`. It produces `ext4-combined.img.gz` first and then converts the raw image into `qcow2` during collection.
